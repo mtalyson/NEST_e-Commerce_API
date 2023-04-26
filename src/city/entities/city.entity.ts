@@ -1,4 +1,4 @@
-import { AddressEntity } from 'src/adress/entities/adress.entity';
+import { AddressEntity } from 'src/address/entities/address.entity';
 import { StateEntity } from 'src/state/entitites/state.entity';
 import {
   Column,
