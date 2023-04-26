@@ -13,8 +13,8 @@ import { ReturnLoginDto } from './dtos/returnLogin.dto';
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
-  @Post()
   @UsePipes(ValidationPipe)
+  @Post()
   async login(@Body() loginDto: LoginDto): Promise<ReturnLoginDto> {
     return this.authService.login(loginDto);
   }

@@ -16,8 +16,8 @@ import { ReturnUserDto } from './dtos/returnUser.dto';
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
-  @Post()
   @UsePipes(ValidationPipe)
+  @Post()
   async createUser(@Body() createUserDto: CreateUserDto): Promise<UserEntity> {
     return this.userService.createUser(createUserDto);
   }
