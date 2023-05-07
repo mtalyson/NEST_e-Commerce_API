@@ -5,10 +5,11 @@ import {
 } from '@nestjs/common';
 import { CreateUserDto } from './dtos/createUser.dto';
 import { UserEntity } from './entities/user.entity';
-import { hash } from 'bcrypt';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { UserType } from './enum/user-type.enum';
+import { UpdateUserPasswordDto } from './dtos/updateUserPassword.dto';
+import { createHashedPassword, validatePassword } from '../utils/password';
 
 @Injectable()
 export class UserService {
@@ -26,8 +27,7 @@ export class UserService {
       throw new BadRequestException('Email already registered.');
     }
 
-    const saltOrRounds = 10;
-    const passwordHashed = await hash(createUserDto.password, saltOrRounds);
+    const passwordHashed = await createHashedPassword(createUserDto.password);
 
     return this.userRepository.save({
       ...createUserDto,
@@ -36,7 +36,7 @@ export class UserService {
     });
   }
 
-  async getAllUser(): Promise<UserEntity[]> {
+  async findAllUser(): Promise<UserEntity[]> {
     return this.userRepository.find();
   }
 
@@ -81,5 +81,30 @@ export class UserService {
     }
 
     return user;
+  }
+
+  async updateUserPassword(
+    userId: number,
+    updateUserPasswordDto: UpdateUserPasswordDto,
+  ): Promise<UserEntity> {
+    const user = await this.findUserById(userId);
+
+    const isMath = await validatePassword(
+      updateUserPasswordDto.lastPassword,
+      user.password,
+    );
+
+    if (!isMath) {
+      throw new BadRequestException('Last password invalid');
+    }
+
+    const passwordHashed = await createHashedPassword(
+      updateUserPasswordDto.newPassword,
+    );
+
+    return this.userRepository.save({
+      ...user,
+      password: passwordHashed,
+    });
   }
 }
