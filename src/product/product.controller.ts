@@ -1,7 +1,9 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
+  Param,
   Post,
   UsePipes,
   ValidationPipe,
@@ -12,10 +14,20 @@ import { ReturnProductDTO } from './dtos/returnProduct.dto';
 import { ProductService } from './product.service';
 import { ProductEntity } from './entities/product.entity';
 import { CreateProductDTO } from './dtos/createProduct.dto';
+import { DeleteResult } from 'typeorm';
 
 @Controller('product')
 export class ProductController {
   constructor(private readonly productService: ProductService) {}
+
+  @Post()
+  @Roles(UserType.Admin)
+  @UsePipes(ValidationPipe)
+  async createProduct(
+    @Body() createProduct: CreateProductDTO,
+  ): Promise<ProductEntity> {
+    return this.productService.createProduct(createProduct);
+  }
 
   @Get()
   @Roles(UserType.Admin, UserType.User)
@@ -25,12 +37,11 @@ export class ProductController {
     );
   }
 
-  @Post()
+  @Delete('/:productId')
   @Roles(UserType.Admin)
-  @UsePipes(ValidationPipe)
-  async createProduct(
-    @Body() createProduct: CreateProductDTO,
-  ): Promise<ProductEntity> {
-    return this.productService.createProduct(createProduct);
+  async deleteProductById(
+    @Param('productId') productId: number,
+  ): Promise<DeleteResult> {
+    return this.productService.deleteProductById(productId);
   }
 }
