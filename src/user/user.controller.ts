@@ -13,7 +13,9 @@ import { UserService } from './user.service';
 import { UserEntity } from './entities/user.entity';
 import { ReturnUserDto } from './dtos/returnUser.dto';
 import { UpdateUserPasswordDto } from './dtos/updateUserPassword.dto';
-import { UserId } from 'src/decorators/userId.decorator';
+import { UserId } from '../decorators/userId.decorator';
+import { Roles } from 'src/decorators/roles.decorator';
+import { UserType } from './enum/user-type.enum';
 
 @Controller('user')
 export class UserController {
@@ -26,6 +28,7 @@ export class UserController {
   }
 
   @Get()
+  @Roles(UserType.Admin)
   async findAllUser(): Promise<ReturnUserDto[]> {
     return (await this.userService.findAllUser()).map(
       (userEntity) => new ReturnUserDto(userEntity),
@@ -33,6 +36,7 @@ export class UserController {
   }
 
   @Get('/:userId')
+  @Roles(UserType.Admin)
   async findUserByIdWithRelations(
     @Param('userId') userId: number,
   ): Promise<ReturnUserDto> {
@@ -43,6 +47,7 @@ export class UserController {
 
   @Patch()
   @UsePipes(ValidationPipe)
+  @Roles(UserType.Admin, UserType.User)
   async updateUserPassword(
     @UserId() userId: number,
     @Body() updateUserPasswordDto: UpdateUserPasswordDto,

@@ -13,12 +13,12 @@ import { UserType } from '../user/enum/user-type.enum';
 import { CategoryEntity } from './entities/category.entity';
 import { CreateCategory } from './dtos/createCategory.dto';
 
-@Roles(UserType.Admin, UserType.User)
 @Controller('category')
 export class CategoryController {
   constructor(private readonly categoryService: CategoryService) {}
 
   @Get()
+  @Roles(UserType.Admin, UserType.User)
   async findAllCategories(): Promise<ReturnCategoryDTO[]> {
     return (await this.categoryService.findAllCategories()).map(
       (category) => new ReturnCategoryDTO(category),
