@@ -18,6 +18,9 @@ describe('UserController', () => {
             createUser: jest.fn().mockResolvedValue(userEntityMock),
             updateUserPassword: jest.fn().mockResolvedValue(userEntityMock),
             findAllUser: jest.fn().mockResolvedValue([userEntityMock]),
+            findUserByIdWithRelations: jest
+              .fn()
+              .mockResolvedValue(userEntityMock),
           },
         },
       ],
@@ -51,6 +54,18 @@ describe('UserController', () => {
         cpf: userEntityMock.cpf,
       },
     ]);
+  });
+
+  it('should return ReturnUser in findUserByIdWithRelations', async () => {
+    const users = await controller.findUserByIdWithRelations(userEntityMock.id);
+
+    expect(users).toEqual({
+      id: userEntityMock.id,
+      name: userEntityMock.name,
+      email: userEntityMock.email,
+      phone: userEntityMock.phone,
+      cpf: userEntityMock.cpf,
+    });
   });
 
   it('should return UserEntity in updatePasswordUser', async () => {

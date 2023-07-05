@@ -2,6 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { CityController } from '../city.controller';
 import { CityService } from '../city.service';
 import { cityMock } from '../__mocks__/city.mock';
+import { stateMock } from '../../state/__mocks__/state.mock';
 
 describe('CityController', () => {
   let controller: CityController;
@@ -13,7 +14,7 @@ describe('CityController', () => {
         {
           provide: CityService,
           useValue: {
-            getAllCitiesByStateId: jest.fn().mockResolvedValue([cityMock]),
+            getAllCitiesByState: jest.fn().mockResolvedValue([cityMock]),
           },
         },
       ],
@@ -27,5 +28,11 @@ describe('CityController', () => {
   it('should be defined', () => {
     expect(controller).toBeDefined();
     expect(cityService).toBeDefined();
+  });
+
+  it('should return city Entity in getAllCitiesByState', async () => {
+    expect(await controller.getAllCitiesByState(stateMock.id)).toEqual([
+      cityMock,
+    ]);
   });
 });

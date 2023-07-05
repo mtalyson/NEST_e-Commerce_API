@@ -6,6 +6,7 @@ import { cartMock } from '../__mocks__/cart.mock';
 import { returnDeleteMock } from '../../__mocks__/returnDelete.mock';
 import { insertCartMock } from '../__mocks__/insertCart.mock';
 import { updateCartMock } from '../__mocks__/updateCart.mock';
+import { productMock } from '../../product/__mocks__/product.mock';
 
 describe('CartController', () => {
   let controller: CartController;
@@ -20,6 +21,7 @@ describe('CartController', () => {
             insertProductInCart: jest.fn().mockResolvedValue(cartMock),
             findCartByUserId: jest.fn().mockResolvedValue(cartMock),
             clearCart: jest.fn().mockResolvedValue(returnDeleteMock),
+            deleteProductInCart: jest.fn().mockResolvedValue(returnDeleteMock),
             updateProductInCart: jest.fn().mockResolvedValue(cartMock),
           },
         },
@@ -44,8 +46,25 @@ describe('CartController', () => {
     });
   });
 
+  it('should cart Entity in findCartByUserId', async () => {
+    const cart = await controller.findCartByUserId(userEntityMock.id);
+
+    expect(cart).toEqual({
+      id: cartMock.id,
+    });
+  });
+
   it('should return DeleteResult in clearCart', async () => {
     const cart = await controller.clearCart(userEntityMock.id);
+
+    expect(cart).toEqual(returnDeleteMock);
+  });
+
+  it('should return DeleteResult in deleteProductInCart', async () => {
+    const cart = await controller.deleteProductInCart(
+      productMock.id,
+      userEntityMock.id,
+    );
 
     expect(cart).toEqual(returnDeleteMock);
   });
