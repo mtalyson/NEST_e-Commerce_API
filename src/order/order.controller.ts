@@ -20,7 +20,7 @@ export class OrderController {
   async createOrder(
     @Body() createOrderDto: CreateOrderDTO,
     @UserId() userId: number,
-  ) {
+  ): Promise<OrderEntity> {
     return this.orderService.createOrder(createOrderDto, userId);
   }
 
