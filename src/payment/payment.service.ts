@@ -8,7 +8,7 @@ import { PaymentType } from '../payment-status/enums/payment-type.enum';
 import { PaymentPixEntity } from './entities/payment-pix.entity';
 import { ProductEntity } from '../product/entities/product.entity';
 import { CartEntity } from '../cart/entities/cart.entity';
-import { CartProductEntity } from 'src/cart-product/entities/cart-product.entity';
+import { CartProductEntity } from '../cart-product/entities/cart-product.entity';
 
 @Injectable()
 export class PaymentService {

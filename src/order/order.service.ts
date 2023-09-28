@@ -19,7 +19,7 @@ export class OrderService {
     private readonly orderRepository: Repository<OrderEntity>,
     private readonly paymentService: PaymentService,
     private readonly cartService: CartService,
-    private readonly OrderProductService: OrderProductService,
+    private readonly orderProductService: OrderProductService,
     private readonly productService: ProductService,
   ) {}
 
@@ -43,7 +43,7 @@ export class OrderService {
   ): Promise<OrderProductEntity[]> {
     return Promise.all(
       cart.cartProduct?.map((cartProduct) =>
-        this.OrderProductService.createOrderProduct(
+        this.orderProductService.createOrderProduct(
           orderId,
           cartProduct.productId,
           products.find((product) => product.id === cartProduct.productId)
