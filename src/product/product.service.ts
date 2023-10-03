@@ -22,13 +22,25 @@ export class ProductService {
     });
   }
 
-  async findAllProducts(productId?: number[]): Promise<ProductEntity[]> {
+  async findAllProducts(
+    productId?: number[],
+    isFindRelations?: boolean,
+  ): Promise<ProductEntity[]> {
     let findOptions = {};
 
     if (productId && productId.length > 0) {
       findOptions = {
         where: {
           id: In(productId),
+        },
+      };
+    }
+
+    if (isFindRelations) {
+      findOptions = {
+        ...findOptions,
+        relations: {
+          category: true,
         },
       };
     }

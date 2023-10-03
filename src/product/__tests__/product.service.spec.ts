@@ -1,6 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { ProductService } from '../product.service';
-import { Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
 import { ProductEntity } from '../entities/product.entity';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { productMock } from '../__mocks__/product.mock';
@@ -54,6 +54,33 @@ describe('ProductService', () => {
     expect(await service.findAllProducts()).toEqual([productMock]);
   });
 
+  it('should return relations in find all products', async () => {
+    const spy = jest.spyOn(productRepository, 'find');
+    const products = await service.findAllProducts([], true);
+
+    expect(products).toEqual([productMock]);
+    expect(spy.mock.calls[0][0]).toEqual({
+      relations: {
+        category: true,
+      },
+    });
+  });
+
+  it('should return relatiosn and array in find all products', async () => {
+    const spy = jest.spyOn(productRepository, 'find');
+    const products = await service.findAllProducts([1], true);
+
+    expect(products).toEqual([productMock]);
+    expect(spy.mock.calls[0][0]).toEqual({
+      where: {
+        id: In([1]),
+      },
+      relations: {
+        category: true,
+      },
+    });
+  });
+
   it('should return error in findAllProducts if products empty', async () => {
     jest.spyOn(productRepository, 'find').mockResolvedValue([]);
 
@@ -78,8 +105,16 @@ describe('ProductService', () => {
     expect(service.createProduct(createProductMock)).rejects.toThrowError();
   });
 
-  it('should return a product in findProductById', async () => {
-    expect(await service.findProductById(productMock.id)).toEqual(productMock);
+  it('should return product in find by id', async () => {
+    const spy = jest.spyOn(productRepository, 'findOne');
+    const product = await service.findProductById(productMock.id);
+
+    expect(product).toEqual(productMock);
+    expect(spy.mock.calls[0][0]).toEqual({
+      where: {
+        id: productMock.id,
+      },
+    });
   });
 
   it('should return error in findProductById if product not found', async () => {
