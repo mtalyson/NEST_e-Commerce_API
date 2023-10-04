@@ -39,6 +39,16 @@ export class ProductController {
     );
   }
 
+  @Get('/:productId')
+  @Roles(UserType.Admin, UserType.Root, UserType.User)
+  async findProductById(
+    @Param('productId') productId: number,
+  ): Promise<ReturnProductDTO> {
+    return new ReturnProductDTO(
+      await this.productService.findProductById(productId, true),
+    );
+  }
+
   @Delete('/:productId')
   @Roles(UserType.Admin, UserType.Root)
   async deleteProductById(
