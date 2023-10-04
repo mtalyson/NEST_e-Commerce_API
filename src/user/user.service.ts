@@ -18,8 +18,11 @@ export class UserService {
     private readonly userRepository: Repository<UserEntity>,
   ) {}
 
-  async createUser(createUserDto: CreateUserDto): Promise<UserEntity> {
-    const user = await this.findUserByEmail(createUserDto.email).catch(
+  async createUser(
+    createUser: CreateUserDto,
+    userType?: number,
+  ): Promise<UserEntity> {
+    const user = await this.findUserByEmail(createUser.email).catch(
       () => undefined,
     );
 
@@ -27,11 +30,11 @@ export class UserService {
       throw new BadRequestException('Email already registered.');
     }
 
-    const passwordHashed = await createHashedPassword(createUserDto.password);
+    const passwordHashed = await createHashedPassword(createUser.password);
 
     return this.userRepository.save({
-      ...createUserDto,
-      typeUser: UserType.User,
+      ...createUser,
+      typeUser: userType ? userType : UserType.User,
       password: passwordHashed,
     });
   }
@@ -85,12 +88,12 @@ export class UserService {
 
   async updateUserPassword(
     userId: number,
-    updateUserPasswordDto: UpdateUserPasswordDto,
+    updateUserPassword: UpdateUserPasswordDto,
   ): Promise<UserEntity> {
     const user = await this.findUserById(userId);
 
     const isMath = await validatePassword(
-      updateUserPasswordDto.lastPassword,
+      updateUserPassword.lastPassword,
       user.password,
     );
 
@@ -99,7 +102,7 @@ export class UserService {
     }
 
     const passwordHashed = await createHashedPassword(
-      updateUserPasswordDto.newPassword,
+      updateUserPassword.newPassword,
     );
 
     return this.userRepository.save({

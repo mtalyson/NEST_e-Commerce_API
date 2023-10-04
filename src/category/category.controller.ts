@@ -18,14 +18,14 @@ export class CategoryController {
   constructor(private readonly categoryService: CategoryService) {}
 
   @Get()
-  @Roles(UserType.Admin, UserType.User)
+  @Roles(UserType.Admin, UserType.Root, UserType.User)
   async findAllCategories(): Promise<ReturnCategoryDTO[]> {
     return this.categoryService.findAllCategories();
   }
 
   @Post()
   @UsePipes(ValidationPipe)
-  @Roles(UserType.Admin)
+  @Roles(UserType.Admin, UserType.Root)
   async createCategory(
     @Body() createCategory: CreateCategory,
   ): Promise<CategoryEntity> {

@@ -21,7 +21,7 @@ export class OrderController {
 
   @Post()
   @UsePipes(ValidationPipe)
-  @Roles(UserType.Admin, UserType.User)
+  @Roles(UserType.Admin, UserType.Root, UserType.User)
   async createOrder(
     @Body() createOrderDto: CreateOrderDTO,
     @UserId() userId: number,
@@ -30,13 +30,13 @@ export class OrderController {
   }
 
   @Get()
-  @Roles(UserType.Admin, UserType.User)
+  @Roles(UserType.Admin, UserType.Root, UserType.User)
   async findOrdersByUserId(@UserId() userId: number): Promise<OrderEntity[]> {
     return this.orderService.findOrdersByUserId(userId);
   }
 
   @Get('/all')
-  @Roles(UserType.Admin)
+  @Roles(UserType.Admin, UserType.Root)
   async findAllOrders(): Promise<ReturnOrderDTO[]> {
     return (await this.orderService.findAllOrders()).map(
       (order) => new ReturnOrderDTO(order),
@@ -44,7 +44,7 @@ export class OrderController {
   }
 
   @Get('/:orderId')
-  @Roles(UserType.Admin)
+  @Roles(UserType.Admin, UserType.Root)
   async findOrderById(
     @Param('orderId') orderId: number,
   ): Promise<ReturnOrderDTO> {
