@@ -6,6 +6,7 @@ export class CreateTableCart1683744611227 implements MigrationInterface {
       CREATE TABLE public.cart (
         id integer NOT NULL,
         user_id integer NOT NULL,
+        active boolean NOT NULL,
         created_at timestamp without time zone DEFAULT now() NOT NULL,
         updated_at timestamp without time zone DEFAULT now() NOT NULL,
         primary key (id),
